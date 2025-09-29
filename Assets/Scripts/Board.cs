@@ -1,19 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class Board : MonoBehaviour
 {
     public const int Size = 8;
+    public const float CellSpace = 0.5f;
 
     [SerializeField] private Cell cellPrefab;
     [SerializeField] private Transform cellsTransform;
 
-    private readonly Cell[,] cells = new Cell[Size, Size];
+    private Cell[,] cells;
 
-
-    private void Start()
+    private void Awake()
     {
+        cells = new Cell[Size, Size];
         InitGrid();
     }
 
@@ -23,9 +25,16 @@ public class Board : MonoBehaviour
         {
             for(var c = 0; c < Size; c++)
             {
-                cells[r, c] = Instantiate(cellPrefab, cellsTransform);
-                cells[r, c].transform.position = new(c + 0.5f, r + 0.5f, 0.0f);
+                var pos = GetCellPosition(r, c);
+                cells[r, c] = Instantiate(cellPrefab, pos, Quaternion.identity, cellsTransform);
             }
         }
+    }
+
+    private Vector3 GetCellPosition(int row, int col)
+    {
+        float offsetX = col - (Size * CellSpace) + CellSpace;
+        float offsetY = row - (Size * CellSpace) + CellSpace;
+        return new Vector3(offsetX, offsetY, 0f);
     }
 }
