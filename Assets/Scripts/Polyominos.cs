@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using H_Utils;
 public static class Polyominos
 {
     private static readonly int[][,] polyominos = new int[][,]
@@ -14,12 +14,16 @@ public static class Polyominos
         }
     };
 
+    static Polyominos()
+    {
+        foreach(var polyomino in polyominos)
+        {
+            ArrUtils.ReverseRows(polyomino);
+        }
+    }
+
     public static int[,] Get(int index) => polyominos[index];
 
     public static int Length => polyominos.Length;
 
-    private static void ReverseRows(int[,] arr)
-    {
-
-    }
 }

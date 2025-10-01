@@ -9,8 +9,27 @@ public class Block : MonoBehaviour
     [SerializeField] Cell _cellPrefab;
     private readonly Cell[,] cells = new Cell[Size, Size];
 
+    private readonly Vector3 inputOffset = new(0f, 2f, 0f);
+
+    Vector3 _prevMousePos;
+    Vector3 _curMousePos;
+    Vector3 _initPos;
+    Vector3 _initScale;
+    Vector3 _inputDelta;
+
+    //Cache
+    Camera mainCamera;
+
+    private void Awake()
+    {
+        mainCamera = Camera.main;
+    }
+
     public void Initialize()
     {
+        _initPos = transform.position;
+        _initScale = transform.localScale;
+
         for(var r = 0; r < Size; ++r)
         {
             for(var c = 0; c < Size; ++c)
@@ -46,5 +65,44 @@ public class Block : MonoBehaviour
         {
             cell.Hide();
         }
+    }
+
+    private void OnMouseDown()
+    {
+        Debug.Log("Click Block");
+
+
+        _prevMousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        _prevMousePos.z = 0;
+        _inputDelta = transform.position - _prevMousePos + inputOffset;
+
+        transform.localPosition = _initPos + _inputDelta;
+        transform.localScale = Vector3.one;
+
+    }
+
+    private void OnMouseDrag()
+    {
+        _curMousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        
+        if (_curMousePos != _prevMousePos)
+        {
+            _curMousePos.z = 0;
+            _prevMousePos = _curMousePos;
+
+            transform.localPosition = _curMousePos + _inputDelta;
+        }
+
+    }
+    private void OnMouseUp()
+    {
+        BackToInitPos();
+    }
+
+    void BackToInitPos()
+    {
+        _prevMousePos = Vector2.positiveInfinity;
+        transform.position = _initPos;
+        transform.localScale = _initScale;
     }
 }

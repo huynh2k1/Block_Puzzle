@@ -36,5 +36,21 @@ namespace H_Utils
             }
         }
 
+        public static void ReverseArray<T>(T[,] arr)
+        {
+            int rows = arr.GetLength(0);
+            int cols = arr.GetLength(1);
+
+            for(int r = 0; r < rows / 2; r++)
+            {
+                for(int c = 0; c < cols / 2; ++c)
+                {
+                    int oppositeRow = rows - 1 - c;
+                    int oppositeCol = cols - 1 - c; 
+
+                }
+            }
+        }
+
     }
 }
