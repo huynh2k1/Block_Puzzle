@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
+    public int Row;
+    public int Col;
+
     [SerializeField] private Sprite normal;
     [SerializeField] private Sprite highlight;
     private SpriteRenderer spriteRenderer;

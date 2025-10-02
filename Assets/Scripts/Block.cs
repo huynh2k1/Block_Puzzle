@@ -6,16 +6,22 @@ public class Block : MonoBehaviour
 {
     public const int Size = 4;
 
+    [SerializeField] Board board;
     [SerializeField] Cell _cellPrefab;
     private readonly Cell[,] cells = new Cell[Size, Size];
-
     private readonly Vector3 inputOffset = new(0f, 2f, 0f);
+
+    int _polyominoIndex;
 
     Vector3 _prevMousePos;
     Vector3 _curMousePos;
     Vector3 _initPos;
     Vector3 _initScale;
     Vector3 _inputDelta;
+    Vector2 center;
+
+    Vector2Int previousDragPoint;
+    Vector2Int currentDragPoint;
 
     //Cache
     Camera mainCamera;
@@ -43,10 +49,15 @@ public class Block : MonoBehaviour
     //Hiển thị hình dạng polyomino : 1 -> active, 0 -> deactive
     public void Show(int polyominoIndex)
     {
+        _polyominoIndex = polyominoIndex;
+
+        Hide();
+
         var polyomino = Polyominos.Get(polyominoIndex);
         var polyominoRows = polyomino.GetLength(0);
         var polyominoColumns = polyomino.GetLength(1);
-        Hide();
+
+        center = new Vector2(polyominoColumns * 0.5f, polyominoRows * 0.5f);
         for(var r = polyominoRows - 1; r >= 0; --r)
         {
             for (var c = polyominoColumns - 1; c >= 0; --c)
@@ -69,9 +80,6 @@ public class Block : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("Click Block");
-
-
         _prevMousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         _prevMousePos.z = 0;
         _inputDelta = transform.position - _prevMousePos + inputOffset;
@@ -79,6 +87,8 @@ public class Block : MonoBehaviour
         transform.localPosition = _initPos + _inputDelta;
         transform.localScale = Vector3.one;
 
+        currentDragPoint = Vector2Int.RoundToInt((Vector2)transform.position - center);
+        previousDragPoint = currentDragPoint;
     }
 
     private void OnMouseDrag()
@@ -91,6 +101,13 @@ public class Block : MonoBehaviour
             _prevMousePos = _curMousePos;
 
             transform.localPosition = _curMousePos + _inputDelta;
+
+            currentDragPoint = Vector2Int.RoundToInt((Vector2)transform.position - center);
+            if(currentDragPoint != previousDragPoint)
+            {
+                previousDragPoint = currentDragPoint;
+                Debug.Log($"Drag Point {currentDragPoint}");
+            }
         }
 
     }

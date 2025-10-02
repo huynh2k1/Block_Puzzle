@@ -27,6 +27,9 @@ public class Board : MonoBehaviour
             {
                 var pos = GetCellPosition(r, c);
                 cells[r, c] = Instantiate(cellPrefab, pos, Quaternion.identity, cellsTransform);
+                cells[r, c].name = "( " + r + "_" + c + " )";
+                cells[r, c].Row = r;
+                cells[r, c].Col = c;
             }
         }
     }
@@ -36,5 +39,10 @@ public class Board : MonoBehaviour
         float offsetX = col - (Size * CellSpace) + CellSpace;
         float offsetY = row - (Size * CellSpace) + CellSpace;
         return new Vector3(offsetX, offsetY, 0f);
+    }
+
+    public void Hover(Vector2Int pos, int polyominoIndex)
+    {
+
     }
 }
